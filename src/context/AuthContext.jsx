@@ -21,7 +21,7 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
   useImperativeHandle(contextRef, () => (user ? user.token : undefined));
 
   useEffect(() => {
-    authErrorEventBus.listen((err) => {
+    authErrorEventBus.listen(err => {
       console.log(err);
       setUser(undefined);
     });
@@ -35,13 +35,13 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
     async (username, password, name, email, url) =>
       authService
         .signup(username, password, name, email, url)
-        .then((user) => setUser(user)),
+        .then(user => setUser(user)),
     [authService]
   );
 
   const logIn = useCallback(
     async (username, password) =>
-      authService.login(username, password).then((user) => setUser(user)),
+      authService.login(username, password).then(user => setUser(user)),
     [authService]
   );
 
@@ -65,7 +65,7 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
       {user ? (
         children
       ) : (
-        <div className='app'>
+        <div className="app">
           <Header />
           <Login onSignUp={signUp} onLogin={logIn} />
         </div>
