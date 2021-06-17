@@ -10,16 +10,20 @@ const Tweets = memo(({ tweetService, username, addable }) => {
   const [error, setError] = useState('');
   const history = useHistory();
   const { user } = useAuth();
+
+  const onCreated = tweet => {
+    setTweets(tweets => [tweet, ...tweets]);
+  };
+
   useEffect(() => {
     tweetService
       .getTweets(username)
       .then(tweets => setTweets([...tweets]))
       .catch(onError);
-  }, [tweetService, username, user]);
 
-  const onCreated = tweet => {
-    setTweets(tweets => [tweet, ...tweets]);
-  };
+    const stopSync = tweetService.onSync(tweet => onCreated(tweet));
+    return () => stopSync();
+  }, [tweetService, username, user]);
 
   const onDelete = tweetId =>
     tweetService
