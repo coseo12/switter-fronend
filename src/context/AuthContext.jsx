@@ -13,12 +13,16 @@ import Login from '../pages/Login';
 
 const AuthContext = createContext({});
 
-const contextRef = createRef();
+const tokenRef = createRef();
+
+const csrfTokenRef = createRef();
 
 export function AuthProvider({ authService, authErrorEventBus, children }) {
   const [user, setUser] = useState(undefined);
+  const [csrfToken, setCsrfToken] = useState(undefined);
 
-  useImperativeHandle(contextRef, () => (user ? user.token : undefined));
+  useImperativeHandle(tokenRef, () => (user ? user.token : undefined));
+  useImperativeHandle(csrfTokenRef, () => csrfToken);
 
   useEffect(() => {
     authErrorEventBus.listen(err => {
@@ -29,6 +33,10 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
 
   useEffect(() => {
     authService.me().then(setUser).catch(console.error);
+  }, [authService]);
+
+  useEffect(() => {
+    authService.csrfToken().then(setCsrfToken).catch(console.error);
   }, [authService]);
 
   const signUp = useCallback(
@@ -84,5 +92,6 @@ export class AuthErrorEventBus {
 }
 
 export default AuthContext;
-export const fetchToken = () => contextRef.current;
+export const fetchToken = () => tokenRef.current;
 export const useAuth = () => useContext(AuthContext);
+export const fetchCsrfToken = () => csrfTokenRef.current;

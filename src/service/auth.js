@@ -35,9 +35,16 @@ export default class AuthService {
   }
 
   async logout() {
-    console.log('logout?');
     return await this.http.fetch('/auth/logout', {
       method: 'GET',
     });
+  }
+
+  async csrfToken() {
+    const res = await this.http.fetch('/auth/csrf-token', {
+      method: 'GET',
+    });
+
+    return res.csrfToken;
   }
 }
