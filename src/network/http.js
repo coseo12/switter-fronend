@@ -8,6 +8,7 @@ export default class HttpClient {
     const res = await fetch(`${this.baseURL}${url}`, {
       ...options,
       headers: { 'Content-Type': 'application/json', ...options.headers },
+      credentials: 'include',
     });
     try {
       const data = await res.json();

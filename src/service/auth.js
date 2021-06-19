@@ -1,7 +1,6 @@
 export default class AuthService {
-  constructor(http, tokenStorage) {
+  constructor(http) {
     this.http = http;
-    this.tokenStorage = tokenStorage;
   }
 
   async signup(username, password, name, email, url) {
@@ -15,7 +14,6 @@ export default class AuthService {
         url,
       }),
     });
-    this.tokenStorage.saveToken(data.token);
     return data;
   }
 
@@ -27,18 +25,19 @@ export default class AuthService {
         password,
       }),
     });
-    this.tokenStorage.saveToken(data.token);
     return data;
   }
 
   async me() {
     return await this.http.fetch('/auth/me', {
       method: 'GET',
-      headers: this.tokenStorage.getToken(),
     });
   }
 
   async logout() {
-    this.tokenStorage.clearToken();
+    console.log('logout?');
+    return await this.http.fetch('/auth/logout', {
+      method: 'GET',
+    });
   }
 }
